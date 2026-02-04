@@ -13,28 +13,19 @@ import styles from './App.module.css'
 export default function App() {
 	const [query, setQuery] = useState<string>("");
 	const [movies, setMovies] = useState<Movie[]>([]);
-	const [movie, setMovie] = useState<Movie>({
-		id: 0,
-		poster_path: "",
-		backdrop_path: "",
-		title: "",
-		overview: "",
-		release_date: "",
-		vote_average: 0,
-	})
+	const [movie, setMovie] = useState<Movie | null>(null)
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<boolean>(false);
-	const [modal, setModal] = useState<boolean>(false);
 
 	function handleMovieClick(newMovie: Movie) {
 		setMovie(newMovie);
-		setModal(true);
 	}
 
 	useEffect(() => {
 		if (!query) return;
 
 		async function loadMovie() {
+			setMovies([]);
 			setError(false);
 			setLoading(true);
 
@@ -61,7 +52,7 @@ export default function App() {
 			{ loading && <Loader /> }
 			{ movies.length > 0 && <MovieGrid onSelect={handleMovieClick} movies={movies} /> }
 			{ error && <ErrorMessage /> }
-			{ modal && <MovieModal onClose={() => setModal(false)} movie={movie} /> }
+			{ movie !== null && <MovieModal onClose={() => setMovie(null)} movie={movie} /> }
 			<Toaster />
     </div>
   )
